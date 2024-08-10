@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from models import User  # Import the User model
+import os
+from werkzeug.utils import secure_filename
 from flask_migrate import Migrate
 
 
@@ -23,7 +25,7 @@ class User(db.Model):
 class Icon(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
-    url = db.Column(db.String(200))
+    path = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
         return f'<Icon {self.name}>'
@@ -41,6 +43,26 @@ with app.app_context():
     new_icon = Icon(name='New Icon', url='https://example.com/icon.png')
     db.session.add(new_icon)
     db.session.commit()
+
+
+from flask import jsonify, send_from_directory
+import os
+
+from flask import abort
+
+@app.route('/api/icon/<int:icon_id>', methods=['GET'])
+def get_icon(icon_id):
+    icon = Icon.query.get_or_404(icon_id)
+    if not icon.path:
+        abort(404, description="Icon not found")
+    icon_url = f"/static/icons/{icon.path}"
+    return jsonify({"icon": icon_url})
+
+@app.route('/static/icons/<path:filename>')
+def serve_icon(filename):
+    if '..' in filename or filename.startswith('/'):
+        abort(404)
+    return send_from_directory(os.path.join(app.root_path, 'static', 'icons'), filename)
 
 if __name__ == "__main__":
     app.run()
