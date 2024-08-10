@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from flask_migrate import Migrate
 from seeder import *
 
@@ -20,9 +20,15 @@ def index():
     icons = Icon.query.all()
     return render_template('index.html', icons=icons)
 
+@app.route('/seed/users', methods=['POST'])
+def seed_users():
+    add_sample_users()
+    return jsonify({"message": "Sample users added successfully"}), 201
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()  # Create all tables including the User table
-        
+
         add_icons_to_db()
+        add_sample_users()
     app.run()
