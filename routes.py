@@ -4,6 +4,11 @@ from app import app
 from models import Icon
 import os
 
+@app.route('/')
+def index():
+    icons = Icon.query.all()
+    return render_template('index.html', icons=icons)
+
 @app.route('/api/icons')
 def get_all_icons():
     icons = Icon.query.all()
@@ -21,8 +26,8 @@ def get_icon(icon_id):
     icon = Icon.query.get_or_404(icon_id)
     if not icon.path:
         abort(404, description="Icon not found")
-    icon_url = icon.path
-    return jsonify({"icon": icon_url})
+    icon_path = icon.path
+    return jsonify({"icon": icon_path})
 
 @app.route('/static/icons/<path:filename>')
 def serve_icon(filename):

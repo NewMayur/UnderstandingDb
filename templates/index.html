@@ -7,13 +7,27 @@
 </head>
 <body>
     <h1>Icon List</h1>
-    <ul>
-    {% for icon in icons %}
-        <li>
-            <img src="{{ icon.path }}" alt="{{ icon.name }}" width="50" height="50">
-            {{ icon.name }}
-        </li>
-    {% endfor %}
+    <ul id="icon-list">
+        <!-- Icons will be dynamically inserted here -->
     </ul>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/icons')
+                .then(response => response.json())
+                .then(data => {
+                    const iconList = document.getElementById('icon-list');
+                    data.icons.forEach(icon => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <img src="${icon.path}" alt="${icon.name}" width="50" height="50">
+                            ${icon.name}
+                        `;
+                        iconList.appendChild(li);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
 </body>
 </html>

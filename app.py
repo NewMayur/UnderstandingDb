@@ -1,6 +1,5 @@
 from flask import Flask, render_template, jsonify
 from flask_migrate import Migrate
-from seeder import *
 
 # Import the db and models after defining db
 from models import db, Icon
@@ -15,20 +14,24 @@ db.init_app(app)
 # Set up Flask-Migrate
 migrate = Migrate(app, db)
 
-@app.route('/')
-def index():
-    icons = Icon.query.all()
-    return render_template('index.html', icons=icons)
+from routes import *
 
-@app.route('/seed/users', methods=['POST'])
-def seed_users():
-    add_sample_users()
-    return jsonify({"message": "Sample users added successfully"}), 201
+def add_icons_to_db():
+    with app.app_context():
+        icon_dir = os.path.join(app.root_path, 'static', 'icons')
+        for filename in os.listdir(icon_dir):
+            if filename.endswith('.png'):
+                existing_icon = Icon.query.filter_by(name=filename).first()
+                if existing_icon is None:
+                    icon_path = os.path.join('static', 'icons', filename)
+                    new_icon = Icon(name=filename, path=icon_path)
+                    db.session.add(new_icon)
+        db.session.commit()
 
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()  # Create all tables including the User table
 
         add_icons_to_db()
-        add_sample_users()
+
     app.run()
