@@ -6,3 +6,11 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+
+class Icon(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    path = db.Column(db.String(200), nullable=False)
+
+    def __repr__(self):
+        return f'<Icon {self.name}>'
