@@ -1,13 +1,19 @@
 from flask import Flask, render_template, jsonify, send_from_directory, abort, request
 from werkzeug.utils import secure_filename
 from app import app
-from models import Icon
+from models import Icon, Device
 import os
 
 @app.route('/')
 def index():
     icons = Icon.query.all()
     return render_template('index.html', icons=icons)
+
+@app.route('/api/devices')
+def get_all_devices():
+    devices = Device.query.all()
+    device_list = [{'id': device.id, 'name': device.name, 'icon_id': device.icon_id} for device in devices]
+    return jsonify(devices=device_list)
 
 @app.route('/api/icons')
 def get_all_icons():
