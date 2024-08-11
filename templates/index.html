@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Icon List</title>
+    <title>Device List with Icons</title>
 </head>
 <body>
-    <h1>Icon List</h1>
-    <ul id="icon-list">
-        <!-- Icons will be dynamically inserted here -->
+    <h1>Device List with Icons</h1>
+    <ul id="device-list">
+        <!-- Devices with icons will be dynamically inserted here -->
     </ul>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('/api/icons')
+            fetch('/api/devices_with_icons')
                 .then(response => response.json())
                 .then(data => {
-                    const iconList = document.getElementById('icon-list');
-                    data.icons.forEach(icon => {
+                    const deviceList = document.getElementById('device-list');
+                    data.devices.forEach(device => {
                         const li = document.createElement('li');
                         li.innerHTML = `
-                            <img src="${icon.path}" alt="${icon.name}" width="50" height="50">
-                            ${icon.name}
+                            <img src="${device.icon_path}" alt="${device.icon_name}">
+                            ${device.name}
                         `;
-                        iconList.appendChild(li);
+                        deviceList.appendChild(li);
                     });
                 })
                 .catch(error => console.error('Error:', error));

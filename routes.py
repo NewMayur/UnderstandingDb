@@ -9,10 +9,16 @@ def index():
     icons = Icon.query.all()
     return render_template('index.html', icons=icons)
 
-@app.route('/api/devices')
-def get_all_devices():
-    devices = Device.query.all()
-    device_list = [{'id': device.id, 'name': device.name, 'icon_id': device.icon_id} for device in devices]
+@app.route('/api/devices_with_icons')
+def get_devices_with_icons():
+    devices = Device.query.join(Icon).all()
+    device_list = [{
+        'id': device.id,
+        'name': device.name,
+        'icon_id': device.icon_id,
+        'icon_name': device.icon.name,
+        'icon_path': device.icon.path
+    } for device in devices]
     return jsonify(devices=device_list)
 
 @app.route('/api/icons')
