@@ -13,7 +13,7 @@ db.init_app(app)
 
 # Set up Flask-Migrate
 migrate = Migrate(app, db)
-
+        
 from routes import *
 from seeder import seed
 
@@ -21,5 +21,5 @@ if __name__ == "__main__":
     with app.app_context():
         # db.drop_all()
         db.create_all()  # Create all tables including the User table
-        seed(app)
+        # seed(app)
     app.run()

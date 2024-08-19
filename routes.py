@@ -33,16 +33,16 @@ def save_icon_file(icon_file):
     icon_file.save(icon_path)
     return os.path.join('static', 'icons', filename)
 
-@app.route('/static/icons/<int:icon_id>', methods=['GET'])
-def get_icon(icon_id):
-    icon = Icon.query.get_or_404(icon_id)
-    if not icon.path:
-        abort(404, description="Icon not found")
-    icon_path = icon.path
-    return jsonify({"icon": icon_path})
+# @app.route('/static/icons/<int:icon_id>', methods=['GET'])
+# def get_icon(icon_id):
+#     icon = Icon.query.get_or_404(icon_id)
+#     if not icon.path:
+#         abort(404, description="Icon not found")
+#     icon_path = icon.path
+#     return jsonify({"icon": icon_path})
 
-@app.route('/static/icons/<path:filename>')
-def serve_icon(filename):
-    if '..' in filename or filename.startswith('/'):
-        abort(404)
-    return send_from_directory(os.path.join(app.root_path, 'static', 'icons'), filename)
+# @app.route('/static/icons/<path:filename>')
+# def serve_icon(filename):
+#     if '..' in filename or filename.startswith('/'):
+#         abort(404)
+#     return send_from_directory(os.path.join(app.root_path, 'static', 'icons'), filename)
